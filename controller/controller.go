@@ -46,21 +46,6 @@ func insertOneBillboard(billboard model.Billboard) {
 	fmt.Println("Inserted 1 billboard in DB with id: ", inserted.InsertedID)
 }
 
-// update 1 record
-func updateOnebillboard(billboardID string) {
-	id, err := primitive.ObjectIDFromHex(billboardID)
-	if err != nil {
-		log.Fatal(err)
-	}
-	filter := bson.M{"_id": id}
-	update := bson.M{"$set": bson.M{"watched": true}}
-	result, err := collection.UpdateOne(context.Background(), filter, update)
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Println("modified count: ", result.ModifiedCount)
-}
-
 // DELETE  1 RECORD
 func deleteOneBillboard(billboardID string) {
 	id, _ := primitive.ObjectIDFromHex(billboardID)

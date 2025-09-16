@@ -35,15 +35,15 @@ type OwnerDetails struct {
 type LandMarks struct {
 	Name string `josn:"name" bson:"name"`
 }
+
+// --------------------------------------------------------------INFLUENCER-----MODELS----------------------------------------------------------------------------------
 type Influencers struct {
 	ID              primitive.ObjectID `json:"id" bson:"_id,omitempty"`
 	PersonalDetails *PersonalDetails   `json:"personal_details" bson:"personal details" validate:"required"`
 	Services        *Services          `json:"servicesoffered" bson:"servicesoffered" validate:"required"`
 	Platforms       *Platforms         `json:"platforms" bson:"platforms" validate:"required"`
-	Dimensions      string             `json:"dimensions" bson:"dimensions" validate:"required"`
 	OwnerDetails    *OwnerDetails      `json:"ownerdetails" bson:"ownerdetails"` //take details of user->seller
 	Description     string             `json:"description" bson:"description" validate:"required,min=2, max=500"`
-	LocationLink    string             `json:"location" bson:"location" validate:"required"`
 	Discounts       int                `json:"discount" bson:"discounts"`
 	Stars           int                `json:"stars" bson:"stars" validate:"required,max=5"`
 }
