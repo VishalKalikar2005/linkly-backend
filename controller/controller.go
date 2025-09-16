@@ -209,3 +209,42 @@ func UpdateInfluencer(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(result)
 
 }
+func GetAllInfluencers(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("content-type", "application/json")
+	cur, err := influencercollection.Find(context.Background(), bson.D{{}})
+	if err != nil {
+		log.Fatal(err)
+	}
+	var influencers []primitive.M
+	for cur.Next(context.Background()) {
+		var influencer bson.M
+		err := cur.Decode(&influencer)
+		if err != nil {
+			log.Fatal(err)
+		}
+		influencers = append(influencers, influencer)
+	}
+	defer cur.Close(context.Background())
+	json.NewEncoder(w).Encode(influencers)
+}
+func GetInfluencersByAgencyID(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("content-type", "application/json")
+	params := mux.Vars(r)
+	AgencyID := params["id"]
+	filter := bson.M{"ownerdetails.agencyid": AgencyID}
+	cur, err := influencercollection.Find(context.Background(), filter)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+	var influencers []bson.M
+	for cur.Next(context.Background()) {
+		var influencer bson.M
+		err := cur.Decode(&influencer)
+		if err != nil {
+			log.Fatal(err)
+		}
+		influencers = append(influencers, influencer)
+	}
+	defer cur.Close(context.Background())
+	json.NewEncoder(w).Encode(influencers)
+}

@@ -6,11 +6,6 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-type Netflix struct {
-	ID      primitive.ObjectID `json:"_id,omitempty" bson:"_id,omitempty"`
-	Movie   string             `json:"movie,omitempty"`
-	Watched bool               `json:"watched,omitempty"`
-}
 type Billboard struct {
 	ID           primitive.ObjectID `json:"id" bson:"_id,omitempty"`
 	Name         string             `json:"billboardname" bson:"billboardname" validate:"required,min=2, max=100"`
@@ -28,7 +23,7 @@ type Billboard struct {
 }
 
 type OwnerDetails struct {
-	AgencyID            int    `json:"agencyid" bson:"agencyid"`
+	AgencyID            string `json:"agencyid" bson:"agencyid"`
 	AgencyName          string `json:"agencyname" bson:"agencyname" validate:"required,min=2,max=100"`
 	AgencyContactNumber int    `json:"agencycontactnumber" bson:"agencycontactnumber" validate:"required,min"`
 }
