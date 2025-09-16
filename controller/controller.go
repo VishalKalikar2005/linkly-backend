@@ -23,7 +23,8 @@ const (
 )
 
 // MOST IMPORTANT
-var collection *mongo.Collection
+var billboardcollection *mongo.Collection
+var influencercollection *mongo.Collection
 
 // Connect MongoDB
 func init() {
@@ -35,11 +36,12 @@ func init() {
 		log.Fatal(err)
 	}
 	fmt.Println("MongoDB connection Success")
-	collection = client.Database(dbName).Collection(CollBillboards)
+	billboardcollection = client.Database(dbName).Collection(CollBillboards)
+	influencercollection = client.Database(dbName).Collection(CollInfluencers)
 	fmt.Println("Collection reference is ready")
 }
 func insertOneBillboard(billboard model.Billboard) {
-	inserted, err := collection.InsertOne(context.Background(), billboard)
+	inserted, err := billboardcollection.InsertOne(context.Background(), billboard)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -50,7 +52,7 @@ func insertOneBillboard(billboard model.Billboard) {
 func deleteOneBillboard(billboardID string) {
 	id, _ := primitive.ObjectIDFromHex(billboardID)
 	filter := bson.M{"_id": id}
-	deletecount, err := collection.DeleteOne(context.Background(), filter)
+	deletecount, err := billboardcollection.DeleteOne(context.Background(), filter)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -61,7 +63,7 @@ func deleteOneBillboard(billboardID string) {
 // Delete many records
 func deleteAllBillboards() int64 {
 	filter := bson.D{{}}
-	deleteresult, err := collection.DeleteMany(context.Background(), filter)
+	deleteresult, err := billboardcollection.DeleteMany(context.Background(), filter)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -71,7 +73,7 @@ func deleteAllBillboards() int64 {
 
 // get all billboards
 func getAllBillboards() []primitive.M {
-	cur, err := collection.Find(context.Background(), bson.D{{}})
+	cur, err := billboardcollection.Find(context.Background(), bson.D{{}})
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -149,7 +151,7 @@ func UpdateBillboard(w http.ResponseWriter, r *http.Request) {
 		"stars":         updatedBillboard.Stars,
 	}}
 
-	result, err := collection.UpdateOne(context.Background(), filter, update)
+	result, err := billboardcollection.UpdateOne(context.Background(), filter, update)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -167,7 +169,7 @@ func CreateInfluencer(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	inserted, err := collection.InsertOne(context.Background(), influencer)
+	inserted, err := influencercollection.InsertOne(context.Background(), influencer)
 	if err != nil {
 		http.Error(w, "Failed to insert influencer", http.StatusInternalServerError)
 		return
@@ -199,7 +201,7 @@ func UpdateInfluencer(w http.ResponseWriter, r *http.Request) {
 		"discounts":        updatedInfluencer.Discounts,
 		"stars":            updatedInfluencer.Stars,
 	}}
-	result, err := collection.UpdateOne(context.Background(), filter, update)
+	result, err := influencercollection.UpdateOne(context.Background(), filter, update)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
